@@ -125,6 +125,40 @@ class GithubController {
       next(error);
     }
   }
+
+  async recalculateAllScores(req, res, next) {
+    try {
+      const profiles = await GithubProfile.findAll();
+      const recalculated = [];
+
+      for (const profile of profiles) {
+        const popularityScore = (profile.followers * 3) + (profile.total_stars * 2) + (profile.total_forks * 1);
+        const developerScore = (profile.public_repos * 2) + (profile.total_stars * 3) + (profile.followers * 2);
+        
+        const profileCategory = this.classifyProfile(popularityScore, developerScore, profile.followers, profile.public_repos);
+
+        await profile.update({
+          popularity_score: popularityScore,
+          developer_score: developerScore,
+          profile_category: profileCategory,
+        });
+        
+        recalculated.push({ username: profile.username, popularityScore, developerScore, profileCategory });
+      }
+
+      return successResponse(res, 'All scores recalculated successfully', { recalculated });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  classifyProfile(popularity, developer, followers, repos) {
+    if (popularity > 1000 || followers > 500) return 'Popular Developer';
+    if (developer > 500 || repos > 50) return 'Advanced';
+    if (developer > 100 || repos > 10) return 'Intermediate';
+    if (repos > 0) return 'Beginner';
+    return 'Open Source Contributor';
+  }
 }
 
 export default new GithubController();

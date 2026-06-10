@@ -22,4 +22,7 @@ router.post('/refresh/:username', validateUsername, githubController.refreshProf
 // GET /api/github/stats
 router.get('/stats', githubController.getStats.bind(githubController));
 
+// POST /api/github/recalculate-scores
+router.post('/recalculate-scores', githubController.recalculateAllScores.bind(githubController));
+
 export default router;
