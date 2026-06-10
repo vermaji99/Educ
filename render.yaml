@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: github-profile-analyzer
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: github-profile-analyzer
+          envVarKey: RENDER_PORT
+      - key: DB_HOST
+        fromDatabase:
+          name: github-analyzer-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: github-analyzer-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: github-analyzer-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: github-analyzer-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: github-analyzer-db
+          property: password
+      - key: GITHUB_API_URL
+        value: https://api.github.com
+      - key: GITHUB_TOKEN
+        generateValue: true
+databases:
+  - name: github-analyzer-db
+    databaseName: github_analyzer
+    user: github_analyzer
+    plan: free

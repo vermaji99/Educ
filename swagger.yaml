@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: GitHub Profile Analyzer API
+  version: 1.0.0
+  description: Production-ready backend for analyzing GitHub user profiles.
+
+servers:
+  - url: http://localhost:5000
+    description: Local server
+
+paths:
+  /api/github/analyze/{username}:
+    post:
+      summary: Analyze a GitHub user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: refresh
+          schema:
+            type: boolean
+          description: Force re-analysis from GitHub
+      responses:
+        200:
+          description: Success
+        201:
+          description: Profile created
+        404:
+          description: User not found
+
+  /api/github/profiles:
+    get:
+      summary: Get all analyzed profiles
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            default: created_at
+        - in: query
+          name: order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        200:
+          description: List of profiles
+
+  /api/github/profiles/{username}:
+    get:
+      summary: Get a single profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Profile data
+        404:
+          description: Profile not found
+    delete:
+      summary: Delete a profile
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Deleted successfully
+        404:
+          description: Profile not found
+
+  /api/github/refresh/{username}:
+    post:
+      summary: Refresh analysis for a user
+      parameters:
+        - in: path
+          name: username
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Refreshed successfully
+
+  /api/github/stats:
+    get:
+      summary: Get analytics dashboard stats
+      responses:
+        200:
+          description: Dashboard statistics
