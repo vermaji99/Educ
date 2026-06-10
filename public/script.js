@@ -5,14 +5,37 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchProfiles();
 
     // Event Listeners
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    const closeMobileMenu = () => {
+        mobileMenu.classList.add('hidden');
+    };
+
     document.getElementById('nav-dashboard').addEventListener('click', (e) => {
         e.preventDefault();
         showDashboard();
     });
 
+    document.getElementById('mobile-nav-dashboard').addEventListener('click', (e) => {
+        e.preventDefault();
+        showDashboard();
+        closeMobileMenu();
+    });
+
     document.getElementById('nav-recent').addEventListener('click', (e) => {
         e.preventDefault();
         showRecent();
+    });
+
+    document.getElementById('mobile-nav-recent').addEventListener('click', (e) => {
+        e.preventDefault();
+        showRecent();
+        closeMobileMenu();
     });
 
     document.getElementById('analyze-btn').addEventListener('click', analyzeUser);
